@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projectile Motion</title>
+    <style>
+        canvas {
+            background-color: lightblue;
+            border: 5px solid black;
+        }
+        .margin {
+            margin: 10px;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            flex-flow: column;
+            align-items: center;
+        }
+        .ms {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Projectile Motion</h1>
+    </div>
+    <div class="margin">
+        <label for="veloicity"> veloicity </label>
+        <input type="number" name="" id="veloicity">
+        <label class="ms" for="Angle">Angle</label>
+        <input type="number" name="" id="angle">
+        <button class="ms" type="submit" onclick="initial()"> submit </button>
+        <button class="ms" type="reset" onclick="reset()"> reset </button>
+    </div>
+    <div>
+        <canvas id="myCanvas" width="900" height="500"></canvas>
+    </div>
+
+    <script>
+        let c = document.getElementById("myCanvas")
+        ctx = c.getContext("2d")
+        let speedInput = document.getElementById('veloicity')
+        let angleInput = document.getElementById('angle')
+        let x = 20   
+        let y = 380
+        let r = 20
+        let vx
+        let vy
+        let maxheight
+        let fps // number of frames
+        let i = 0 
+        let t // time of motion
+ 
+        /////////////////////////////////////// Motion intial calculation //////////////////////////// 
+        function initial() {
+            let alfa = angleInput.value;
+            let v = speedInput.value
+            let angleInRedian = alfa / (180 / Math.PI)  // from degree to redian
+            vx = v * Math.cos(angleInRedian)
+            vy = v * Math.sin(angleInRedian)
+            t = (2 * v * Math.sin(angleInRedian) / 9.8) * 1000  // time times 1000 to convert to millisecond
+            maxheight = (v * v * Math.sin(Math.pow(angleInRedian, 2)) / (2 * 9.8)) + y 
+            fps = Math.floor(t / vy);
+            let frameDuration = t / fps
+            setInterval(draw, frameDuration / 100)
+        }
+        ///////////////////////////////// drawing motion //////////////////////////////////////////////
+        function draw() {
+            ctx.clearRect(0, 0, c.width, c.height) 
+            if ((y < maxheight) && (y > r) && (i <= (fps / 2))) {
+                x += (vx / 20)  // vx calculated by distance over time , divided by 20 to made speed fit canvas width
+                y -= (vy / 20)
+            }
+            else if ((i > fps / 2) && (y < c.height - r) && (x < c.width - r)) {
+                x += (vx / 20)
+                y += (vy / 20)
+            }
+            i++
+            ctx.fillStyle = "#F00"
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.strokeStyle = '#FFF';
+            ctx.stroke();
+        }
+        ///////////////////////////////////////////////// reset btn ///////////////////////
+        function reset() {
+            location.reload()
+        }
+    </script>
+</body>
+
+</html>
